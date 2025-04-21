@@ -1,0 +1,149 @@
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎯 Microservices Setup & Error Handling Guide
+For: i222415_lab2_F_SCD (User, Car, Booking Services)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📌 PRE-REQUISITES:
+- Node.js (Recommended v18+)
+- MongoDB Atlas URI
+- PM2 installed globally
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Step 1: Navigate to project root
+------------------------------------
+cd ~/SCD/i222415_lab2_F_SCD
+
+✅ Step 2: Ensure correct Node version
+--------------------------------------
+Check current version:
+  node -v
+
+⚠️ If Node < 18, update it:
+
+  curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+  sudo apt-get install -y nodejs
+
+Confirm update:
+  node -v
+  npm -v
+
+✅ Step 3: Install PM2 (if not already)
+---------------------------------------
+sudo npm install -g pm2
+
+✅ Step 4: Setup `.env` file for each service
+----------------------------------------------
+Each service (user, car, booking) must have a `.env` file with:
+
+MONGO_URI=mongodb+srv://<your-username>:<password>@cluster0.f3ddo.mongodb.net/<db-name>?retryWrites=true&w=majority
+
+Replace with your actual values.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚗 CAR SERVICE SETUP
+======================
+
+cd ~/SCD/i222415_lab2_F_SCD/car-service
+
+Clean and install:
+  rm -rf node_modules package-lock.json
+  npm install
+  npm install mongoose
+
+Start with PM2:
+  pm2 start app.js --name car-service
+
+Check logs:
+  pm2 logs car-service
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+👤 USER SERVICE SETUP
+========================
+
+cd ~/SCD/i222415_lab2_F_SCD/user-service
+
+Clean and install:
+  rm -rf node_modules package-lock.json
+  npm install
+  npm install mongoose
+
+Start with PM2:
+  pm2 start app.js --name user-service
+
+Check logs:
+  pm2 logs user-service
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📅 BOOKING SERVICE SETUP
+===========================
+
+cd ~/SCD/i222415_lab2_F_SCD/booking-service
+
+Clean and install:
+  rm -rf node_modules package-lock.json
+  npm install
+  npm install mongoose axios dotenv
+
+Start with PM2:
+  pm2 start app.js --name booking-service
+
+Check logs:
+  pm2 logs booking-service
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🧯 COMMON ERRORS & FIXES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ Error: Cannot find module 'mongoose'
+💡 Fix:
+  npm install mongoose
+
+❌ Error: Cannot find module 'axios' or 'dotenv'
+💡 Fix:
+  npm install axios dotenv
+
+❌ Error: Unsupported engine (Node version error)
+💡 Fix:
+  Upgrade Node.js to v18+ using:
+    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+    sudo apt-get install -y nodejs
+
+❌ Error: MongoDB connection failed
+💡 Fix:
+- Make sure `.env` has correct `MONGO_URI`
+- Internet access is available
+- Cluster is whitelisted to allow all IPs or your local IP
+
+❌ Error: PM2 process not running or crashed
+💡 Fix:
+  pm2 restart <service-name>
+  pm2 logs <service-name>
+  pm2 delete <service-name>
+  pm2 start app.js --name <service-name>
+
+❌ To see all processes:
+  pm2 list
+
+❌ To restart all:
+  pm2 restart all
+
+❌ To stop all:
+  pm2 stop all
+
+❌ To delete all:
+  pm2 delete all
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📦 Final Check
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- All 3 services should show "online" in `pm2 list`
+- Test APIs using Postman or Curl
+- MongoDB Atlas should show created data
+
+🌟 Good luck on your exam, Kashaf! You've got this!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

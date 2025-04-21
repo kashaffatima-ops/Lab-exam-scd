@@ -1,0 +1,48 @@
+└── shared/
+    ├── auth/
+    │   └── jwt.js
+    └── utils/
+        └── validators.js
+
+// shared/utils/jwt.js
+const jwt = require('jsonwebtoken');
+
+const generateToken = (payload, secret, expiresIn = '1h') => {
+    return jwt.sign(payload, secret, { expiresIn });
+};
+
+const verifyToken = (token, secret) => {
+    try {
+        return jwt.verify(token, secret);
+    } catch (error) {
+        return null;
+    }
+};
+
+module.exports = {
+    generateToken,
+    verifyToken
+};
+
+// shared/middleware/auth.js
+const { verifyToken } = require('../utils/jwt');
+
+const authMiddleware = (roles = []) => {
+    return (req, res, next) => {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const token = authHeader.split(' ')[1];
+        const decoded = verifyToken(token, process.env.JWT_SECRET);
+        if (!decoded || (roles.length && !roles.includes(decoded.role))) {
+            return res.status(403).json({ error: 'Forbidden' });
+        }
+
+        req.user = decoded;
+        next();
+    };
+};
+
+module.exports = authMiddleware;
